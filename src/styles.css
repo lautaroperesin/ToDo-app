@@ -1,3 +1,7 @@
+*{
+    font-family: sans-serif;
+}
+
 body{
     background-color: rgb(23, 136, 23);
     display: grid;
@@ -44,4 +48,30 @@ body{
     background-color: rgba(23, 136, 23, 0.397);
     cursor: pointer;
     margin-left: 5px;
+}
+
+.task-item{
+    display: flex;
+    justify-content: space-between;
+    padding: 16px;
+    border: 5px solid rgba(23, 136, 23, 0.397);
+    border-radius: 15px;
+    margin-bottom: 5px;
+    gap:10px;
+    flex-flow: row;
+}
+
+.tasks-list{
+    list-style: none;
+    width: 100%;
+    padding: 0;
+}
+
+.task-item completed{
+    background-color: rgba(23, 136, 23, 0.397);
+    font-weight: bolder;
+}
+
+.task-item completed{
+    text-decoration: line-through;
 }

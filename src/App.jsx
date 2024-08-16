@@ -1,47 +1,58 @@
 import Container from './components/Container'
 import Title from './components/Title';
 import Form from './components/Form';
+import Task from './components/Task';
 import { useState, useEffect } from 'react';
 
 function App() {
-  console.log("Componente App ejecutado");
-
-  const [tasks, setTasks] = useState([]);
-
-  const onSubmitHandler = (event)=>{
-    event.preventDefault();
-    console.log(event);
-    
-    const taskName = event.target.elements.taskName.value
-    saveTask(taskName);
-  }
-
-  const saveTask = (taskName)=>{
-    const idValue = Math.floor(Math.random() * 1000000000000000);
-    const newTask = {text: taskName, selected: false, id: idValue};
-
-    if(!newTask) return;
-
-    setTasks([...tasks, newTask]);
-  }
-
-  useEffect( ()=>{
-    const storedTasks = JSON.parse(localStorage.getItem('tasks')) || [];
-    setTasks(storedTasks);
-    console.log('useEffect1 ejecutado');  // Carga las tareas desde el localstorage al montar el componente
-  }, [] );
+  // Se inicializa el estado de las tareas desde el Local Storage.
+  // Si no existe se inicializa como un arreglo (array) vacío.
+  const [tasks, setTasks] = useState(JSON.parse(localStorage.getItem('tasks')) || []);
   
-  useEffect( ()=>{
-    localStorage.setItem('tasks', JSON.stringify(tasks));
-    console.log('useEffect2 ejecutado');  // Guarda tareas en el localstorage cada vez que cambian
-  }, [tasks] );
+  const onSubmitHandler = (event) => {
+    // Prevenimos el comportamiento por defecto
+    event.preventDefault();
+    // Si no escribió nada el usuairo, retornamos y no seguimos ejecutando.
+    if(!event.target.elements.taskName.value) return;
 
+    // Creamos un nuevo objeto con la tarea
+    const newTask = {
+      id: Math.floor(Math.random() * 1000000000000),
+      name: event.target.elements.taskName.value,
+      completed: false
+    }
+    
+    // Agregamos la nueva tarea al estado
+    setTasks([ ...tasks, newTask ]);
+  }
+  
+  useEffect( () => {
+    // Guardamos las tareas en el Local Storage
+    localStorage.setItem('tasks', JSON.stringify([ ...tasks ]));
+  }, [tasks] ); // Se ejecuta cada vez que el estado de las tareas cambia.
+
+  const onTaskChange = (id) => {
+    const modifiedTask = tasks.map( (task) => {
+      if(task.id === id){
+        task.completed = !task.completed;
+      }
+      return task;
+      });
+      
+      setTasks([...modifiedTask]);
+  }
+  
+  // Renderizamos el componente
   return (
     <>
       <Container>
-        <Title valor="ToDo APP"></Title>
-        <Form onSubmitHandler={onSubmitHandler}/>
-        {JSON.stringify(tasks)}
+        <Title valor="ToDo - App" />
+        <Form onSubmitHandler={onSubmitHandler} />
+        <ul className='tasks-list'>
+          {
+            tasks.map( (taskItem) => <Task key={taskItem.id}{...taskItem} onToggleHandle={onTaskChange}/>)
+          }
+        </ul>
       </Container>
     </>
   );
