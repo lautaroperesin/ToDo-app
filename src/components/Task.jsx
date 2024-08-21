@@ -1,10 +1,10 @@
 function Task ({id, name, completed, onToggleHandle}) {
 
-    const className = completed ? 'task-item completed' : 'task-item';
+    const className = completed ? 'task-item-completed' : 'task-item';
 
-const onToggle = () => {
-    onToggleHandle(id);
-}
+    const onToggle = () => {
+        onToggleHandle(id);
+    }
 
     return (
     <li>
